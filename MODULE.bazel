@@ -1,0 +1,76 @@
+module(name = "bazel-tour", version = "1.0.0")
+
+# 3rd party module dependencies in Bazel Central Registry: https://registry.bazel.build/
+bazel_dep(name = "abseil-cpp", version = "20240722.0", repo_name = "abseil-cpp")
+# bazel_dep(name = "abseil-cpp", version = "20230802.0", repo_name = "abseil-cpp")
+# single_version_override(
+    # module_name = "abseil-cpp",
+    # patch_strip = 1,
+    # patches = ["//cfg-bazel/third_party/abseil-cpp:abseil-cpp.patch"],
+    # version = "20230802.0",
+# )
+bazel_dep(name = "rules_cc", version = "0.0.10")
+bazel_dep(name = "rules_go", version = "0.50.1")
+bazel_dep(name = "rules_proto", version = "6.0.2")
+bazel_dep(name = "rules_proto_grpc", version = "5.0.0")
+bazel_dep(name = "rules_proto_grpc_cpp", version = "5.0.0")
+bazel_dep(name = "rules_proto_grpc_go", version = "5.0.0")
+bazel_dep(name = "rules_proto_grpc_python", version = "5.0.0")
+
+bazel_dep(name = "rules_python", version = "0.36.0")
+# Ensure hermetic Python version 3.10 across all build targets
+# Reference: https://github.com/bazelbuild/rules_python/blob/main/examples/multi_python_versions/MODULE.bazel
+python = use_extension("@rules_python//python/extensions:python.bzl", "python")
+# # Fix for rules_python when running as root:
+# # https://github.com/bazelbuild/rules_python/issues/1169
+# python_register_toolchains(
+#     name = "custom_python_toolchain",
+#     python_version = "PY3",
+#     ignore_root_user_error = True,
+# )
+python.toolchain(
+    configure_coverage_tool = True,
+    # Only set when you have mulitple toolchain versions.
+    # is_default = True,
+    python_version = "3.10",
+)
+use_repo(
+    python,
+    python = "python_versions",
+)
+pip = use_extension("@rules_python//python/extensions:pip.bzl", "pip")
+pip.parse(
+    hub_name = "pypi",
+    python_version = "3.10",
+    requirements_lock = "//cfg-bazel/py/requirements:requirements-lock-3-10.txt",
+)
+use_repo(pip, "pypi")
+
+bazel_dep(name = "abseil-py", version = "2.1.0")
+bazel_dep(name = "pybind11_bazel", version = "2.12.0")
+python_configure = use_extension("@pybind11_bazel//:python_configure.bzl", "extension")
+python_configure.toolchain(python_version = "3")
+use_repo(python_configure, "local_config_python", "pybind11")
+
+bazel_dep(name = "gflags", version = "2.2.2")
+#bazel_dep(name = "glog", version = "0.6.0")
+bazel_dep(name = "googletest", version = "1.15.2")
+bazel_dep(name = "grpc", version = "1.66.0.bcr.2")
+# bazel_dep(name = "protobuf", version = "21.7")
+# To cross-compile grpc for AARCH64, boringssl has be to be overridden to use
+# its master-with-bazel branch per https://github.com/grpc/grpc/issues/30257
+# bazel_dep(name = "boringssl", version = "0.0.0-20211025-d4f1ab9")
+bazel_dep(name = "boringssl", version = "0.20240930.0")
+# boringssl's master-with-bazel branch would not work out of the box, and but
+# fail with the " MODULE.bazel expected but not found" error b/c it is still
+# using the deprecated WORKSPACE instead of bzlmod. A local patch is provided
+# below to add the missing MODULE.bazel file and the necessary dependency
+# modules.
+git_override(
+    module_name = "boringssl",
+    patch_strip = 1,
+    patches = ["//cfg-bazel/third_party/boringssl:boringssl.patch"],
+    commit = "c90d895936b273f9ebb1057b386ca3e862f5312a",
+    remote = "https://github.com/google/boringssl.git",
+)
+

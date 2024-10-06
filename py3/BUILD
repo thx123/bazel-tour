@@ -17,9 +17,6 @@ py_binary(
 py_test(
     name = "hello_world_test",
     srcs = ["hello_world_test.py"],
-    # # Reason: https://groups.google.com/g/bazel-discuss/c/d1RKUmyve_Q
-    legacy_create_init = False,
-    # main = "hello_world_test.py",
     deps = [
         ":hello_world",
         req_dev("pytest"),

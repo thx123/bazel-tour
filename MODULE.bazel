@@ -49,9 +49,6 @@ use_repo(pip_dev, "pypi_dev")
 
 bazel_dep(name = "abseil-py", version = "2.1.0")
 bazel_dep(name = "pybind11_bazel", version = "2.12.0")
-python_configure = use_extension("@pybind11_bazel//:python_configure.bzl", "extension")
-python_configure.toolchain(python_version = "3")
-use_repo(python_configure, "local_config_python", "pybind11")
 
 bazel_dep(name = "gflags", version = "2.2.2")
 #bazel_dep(name = "glog", version = "0.6.0")

@@ -7,7 +7,9 @@ Regular build and run would be fine:
 bazelisk run :main_missing_free
 ```
 
-But build and run in address sanitizer mode will fail:
+But build and run in address sanitizer mode will fail with the detected memory leak error:
+
+NOTE: This no longer works on MacOS: https://github.com/google/sanitizers/issues/1666
 
 ```
 bazelisk run -c dbg --config=asan :main_missing_free

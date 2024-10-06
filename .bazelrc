@@ -19,7 +19,7 @@ common --announce_rc
 # Context: https://blog.bazel.build/2016/03/18/sandbox-easier-debug.html
 # build --sandbox_debug
 
-build --cxxopt=-std=c++23
+build --cxxopt=-std=c++17
 
 # build sementics: https://bazel.build/docs/user-manual#build-semantics
 # opt (optimized) build for production, dbg (debug) build for local development and debugging

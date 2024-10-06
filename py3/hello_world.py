@@ -1,8 +1,7 @@
-from py import greeter
+from py3 import greeter
 
-def main():
+def hello():
     print(greeter.greet())
 
 if __name__ == "__main__":
-    main()
-
+    hello()

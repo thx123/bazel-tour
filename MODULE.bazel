@@ -21,13 +21,6 @@ bazel_dep(name = "rules_python", version = "0.36.0")
 # Ensure hermetic Python version 3.10 across all build targets
 # Reference: https://github.com/bazelbuild/rules_python/blob/main/examples/multi_python_versions/MODULE.bazel
 python = use_extension("@rules_python//python/extensions:python.bzl", "python")
-# # Fix for rules_python when running as root:
-# # https://github.com/bazelbuild/rules_python/issues/1169
-# python_register_toolchains(
-#     name = "custom_python_toolchain",
-#     python_version = "PY3",
-#     ignore_root_user_error = True,
-# )
 python.toolchain(
     configure_coverage_tool = True,
     # Only set when you have mulitple toolchain versions.
@@ -42,9 +35,17 @@ pip = use_extension("@rules_python//python/extensions:pip.bzl", "pip")
 pip.parse(
     hub_name = "pypi",
     python_version = "3.10",
-    requirements_lock = "//cfg-bazel/py/requirements:requirements-lock-3-10.txt",
+    requirements_lock = "//cfg-bazel/py/requirements:requirements_lock_3_10.txt",
 )
 use_repo(pip, "pypi")
+
+pip_dev = use_extension("@rules_python//python/extensions:pip.bzl", "pip")
+pip_dev.parse(
+    hub_name = "pypi_dev",
+    python_version = "3.10",
+    requirements_lock = "//cfg-bazel/py/requirements:requirements_dev_lock_3_10.txt",
+)
+use_repo(pip_dev, "pypi_dev")
 
 bazel_dep(name = "abseil-py", version = "2.1.0")
 bazel_dep(name = "pybind11_bazel", version = "2.12.0")
@@ -73,4 +74,3 @@ git_override(
     commit = "c90d895936b273f9ebb1057b386ca3e862f5312a",
     remote = "https://github.com/google/boringssl.git",
 )
-

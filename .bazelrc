@@ -21,6 +21,9 @@ common --announce_rc
 
 build --cxxopt=-std=c++17
 
+# This is needed to run gRpc C++ on MacOS
+build --cxxopt=-fno-aligned-allocation
+
 # build sementics: https://bazel.build/docs/user-manual#build-semantics
 # opt (optimized) build for production, dbg (debug) build for local development and debugging
 build:opt --compilation_mode=opt

@@ -105,7 +105,7 @@ def run():
     # NOTE(gRPC Python Team): .close() is possible on a channel and should be
     # used in circumstances in which the with statement does not fit the needs
     # of the code.
-    port = '50076'
+    port = '50051'
     if os.environ.get("SERVER_PORT"):
         port = os.environ.get("SERVER_PORT")
 

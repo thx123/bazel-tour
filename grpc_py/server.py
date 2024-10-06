@@ -121,7 +121,7 @@ def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     routeguide_pb2_grpc.add_RouteGuideServicer_to_server(
         RouteGuideServicer(), server)
-    port = '50076'
+    port = '50051'
     if os.environ.get("SERVER_PORT"):
         port = os.environ.get("SERVER_PORT")
     server.add_insecure_port('[::]:' + port)
